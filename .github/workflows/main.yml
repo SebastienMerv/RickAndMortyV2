@@ -1,0 +1,48 @@
+name: Laravel Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Mise à jour du système
+      run: sudo apt-get update
+
+    - name: Installer curl
+      run: sudo apt-get install -y curl
+
+    - name: Installer nvm et Node.js
+      run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 18
+        nvm use 18
+        node -v
+        npm -v
+
+    - name: Déploiement
+      env:
+        SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+        SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      run: |
+        sshpass -p ${{ secrets.SERVER_PASSWORD }} ssh -o StrictHostKeyChecking=no -o ConnectTimeout=60 ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << 'EOF'
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 18
+        nvm use 18
+        node -v
+        npm -v
+        cd /var/www/html/rickandmorty
+        git fetch origin main
+        git reset --hard origin/main
+        npm install
+        npm run build
+        EOF
