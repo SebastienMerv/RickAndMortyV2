@@ -50,9 +50,9 @@ function previousPage() {
     </main>
 
     <div class="flex flex-row items-center justify-center justify-around">
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="previousPage()"
+      <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" @click="previousPage()"
         v-if="page != 1">Page précédente</button>
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="nextPage()">Page
+      <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" @click="nextPage()">Page
         suivante</button>
     </div>
   </main>
